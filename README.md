@@ -4,5 +4,5 @@ Table of Contents
 
 ## Installation
 Follow these steps:
-1. Make sure that Python(3.9.x) and pip(22.x) are installed 
-2. Install the [pyautogui](https://pyautogui.readthedocs.io/en/latest/quickstart.html) package by running `pip install pyautogui`
+1. Make sure that Anaconda3(conda 22.9.0) and pip (21.x) are installed 
+2. Install the [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) package by running `pip install PyAutoGUI`
