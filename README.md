@@ -5,7 +5,7 @@ Table of Contents
 ## Installation
 Follow these steps:
 1. Make sure that Anaconda3 (conda 22.9.0) and pip (21.x) are installed 
-2. Install [PyAutoGUI](https://pypi.org/project/PyAutoGUI/), [keyboard](https://pypi.org/project/keyboard/#description) and [termcolor](https://pypi.org/project/termcolor/) packages 
+2. Install [PyAutoGUI](https://pypi.org/project/PyAutoGUI/), [keyboard](https://pypi.org/project/keyboard/) and [termcolor](https://pypi.org/project/termcolor/) packages 
 ```sh
    pip install PyAutoGUI
    pip install keyboard
