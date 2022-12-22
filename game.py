@@ -3,20 +3,20 @@ import numpy as np
 
 class Cell:
     ''' A cell represents a location in a two-dimensional field, where
-    coordinates are given by (x, y)
+    coordinates are given by (row, col)
     '''
 
-    def __init__(self, x, y):
-        ''' Initiatlizes a cell with coordinates (x, y)
+    def __init__(self, row, col):
+        ''' Initiatlizes a cell with coordinates (row, col)
         '''
-        self.x = x
-        self.y = y
+        self.row = row
+        self.col = col
         # TODO: your code here
         pass
 
 
 class Field:
-    ''' A field is a rectangular region containing all cell, implemented 
+    ''' A field is a rectangular region containing all cells, implemented 
     by a two-dimensional array
     '''
 
