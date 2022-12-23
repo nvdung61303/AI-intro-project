@@ -7,7 +7,7 @@ class Cell:
     '''
 
     def __init__(self, x, y):
-        ''' Initiatlizes a cell with coordinates (x, y)
+        ''' Initiatlize a cell with coordinates (x, y)
         '''
         self.x = x
         self.y = y
@@ -16,24 +16,23 @@ class Cell:
         return self.x, self.y
 
 
-field = []
 class Field:
     ''' A field is a rectangular region containing all cells, implemented 
     by a two-dimensional array
     '''
 
-    def __init__(self, num_rows, num_cols, width, height):
-        ''' Initializes the field
+    def __init__(self, num_rows, num_cols, num_mines, width, height):
+        ''' Set the field
         '''
         self.num_rows = num_rows 
         self.num_cols = num_cols
+        self.num_mines = num_mines
         self.width = width
         self.height = height
-        self.field = field
     
-    def set_field(self):
-        ''' Create the field by adding cells to a two-dimensional array
+        ''' Initialize a field by adding cells to a two-dimensional array
         '''
+        self.field = []
         for y in range(self.num_rows):
             row = []
             for x in range(self.num_cols):
@@ -55,7 +54,7 @@ class Field:
                 if ((row != y or col != x) and
                     (0 <= row < self.num_cols) and
                     (0 <= col < self.numcols)):
-                    neighbors.append(field[row][col])
+                    neighbors.append(self.field[row][col])
         return neighbors
     
     def print_field(self):
