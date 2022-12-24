@@ -24,12 +24,10 @@ class Game:
     def create_field(self):
         ''' Initialize a field by adding cells to a two-dimensional array
         '''
-        self.field = []
-        for r in range(self.nrows):
-            row = []
-            for c in range(self.ncols):
-                row.append(Cell(r, c))
-            self.field.append(row)
+        self.field = np.empty((self.nrows, self.ncols), dtype=object)
+        for row in range(self.nrows):
+            for col in range(self.ncols):
+                self.field[row, col] = Cell(row, col)
 
     def get_neighbors(self, cell):
         ''' Return a list of neighbor cells
@@ -41,8 +39,8 @@ class Game:
                 if ((row != r or col != c) and
                     (0 <= row < self.nrows) and
                     (0 <= col < self.ncols)):
-                    neighbors.append(self.field[row][col])
-        return neighbors
+                    neighbors.append(self.field[row, col])
+        return np.array(neighbors)
 
     def get_state(self, img):
         ''' Get the current state of a cell from screenshot
@@ -54,7 +52,7 @@ class Game:
         '''
         for row in range(self.nrows):
             for col in range(self.ncols):
-                cell = self.field[row][col]
+                cell = self.field[row, col]
                 if cell.value == 9:
                     pass
                     # TODO: your code here
