@@ -1,64 +1,77 @@
 import numpy as np
 
+import pyautogui
+
 
 class Cell: 
     def __init__(self, r, c):
-        ''' Initiatlize a cell with coordinates (r, c) and a value
+        ''' Initiatlize a cell with coordinates (r, c)
         '''
-        self.r = r
-        self.c = c
+        self.r, self.c = r, c
         self.value = 9 #num 0-8, covered 9, flag 10, explosion 11
 
-    def get_coord(self):
-        return self.r, self.c
-
-    def get_value(self):
-        return self.value
-    
-    def set_value(self, value):
-        self.value = value
-
-
-class Field:
-    def __init__(self, num_rows, num_cols, num_mines, width, height):
-        self.num_rows = num_rows 
-        self.num_cols = num_cols
-        self.num_mines = num_mines
-        self.width = width
-        self.height = height
+class Game:
+    ''' Game class hold information about the game current state,
+    methods to solve the field from the current state
+    '''
+    def __init__(self, nrows, ncols, nmines, width, height, left, top):
+        self.nrows, self.ncols = nrows, ncols
+        self.nmines = nmines
+        self.width, self.height = width, height
+        self.left, self.top = left, top
         self.create_field()
     
     def create_field(self):
         ''' Initialize a field by adding cells to a two-dimensional array
         '''
         self.field = []
-        for r in range(self.num_rows):
+        for r in range(self.nrows):
             row = []
-            for c in range(self.num_cols):
+            for c in range(self.ncols):
                 row.append(Cell(r, c))
             self.field.append(row)
 
     def get_neighbors(self, cell):
         ''' Return a list of neighbor cells
         '''
-        row, col = cell.get_coord()
+        r, c = cell.r, cell.c
         neighbors = []
-        for r in range(row - 1, row + 2):
-            for c in range(col - 1, col + 2):
-                if ((r != row or c != col) and
-                    (0 <= r < self.num_rows) and
-                    (0 <= c < self.num_cols)):
-                    neighbors.append(self.field[r][c])
+        for row in range(r - 1, r + 2):
+            for col in range(c - 1, c + 2):
+                if ((row != r or col != c) and
+                    (0 <= row < self.nrows) and
+                    (0 <= col < self.ncols)):
+                    neighbors.append(self.field[row][col])
         return neighbors
 
-    def get_state(self):
-        pass
-
-    def print_field(self):
-        ''' Print the field on the terminal for debugging purpose
+    def get_state(self, img):
+        ''' Get the current state of a cell from screenshot
         '''
         pass
 
-    def click_cell(self, cell):
-        r, c = cell.get_coord()
+    def print(self, img):
+        ''' Print the field on the terminal for debugging purpose
+        '''
+        for row in range(self.nrows):
+            for col in range(self.ncols):
+                cell = self.field[row][col]
+                if cell.value == 9:
+                    pass
+                    # TODO: your code here
+                elif cell.value == 10:
+                    pass
+                    # TODO: your code here
+                elif cell.value == 11:
+                    pass
+                    # TODO: your code here
+                else:
+                    pass
+                    # TODO: your code here
+
+    def click(self, cell, button):
+        y = self.top + cell.r * self.height + 0.5 * self.height
+        x = self.left + cell.c * self.width + 0.5 * self.width
+        pyautogui.click(x, y, button = button)
+    
+    def solve(self, img):
         pass
