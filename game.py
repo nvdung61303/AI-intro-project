@@ -1,6 +1,20 @@
+import math
+
 import numpy as np
 
 import pyautogui
+
+colors = np.array([
+            [189, 189, 189], # 0
+            [0, 0, 255], # 1
+            [0, 123, 0], # 2 
+            [255, 0, 0], # 3
+            [0, 0, 123], # 4
+            [123, 0, 0], # 5
+            [0, 123, 123], #6
+            [255, 255, 255] # covered
+            [0, 0, 0] # mine
+        ])
 
 
 class Cell: 
@@ -8,7 +22,8 @@ class Cell:
         ''' Initiatlize a cell with coordinates (r, c)
         '''
         self.r, self.c = r, c
-        self.value = 9 #num 0-8, covered 9, flag 10, explosion 11
+        self.value = 7 # num 0-6, covered 7, mine 8, flag 9
+
 
 class Game:
     ''' Game class hold information about the game current state,
@@ -42,10 +57,19 @@ class Game:
                     neighbors.append(self.field[row, col])
         return np.array(neighbors)
 
-    def get_state(self, img):
+    def get_state(self, img, cell):
         ''' Get the current state of a cell from screenshot
         '''
-        pass
+        y_center = self.top + cell.r * self.height + 0.5 * self.height
+        x_center = self.left + cell.c * self.width + 0.5 * self.width
+        is_zero_cell = True 
+        for y in range(int(y_center - 0.3 * self.height), int(y_center + 0.3 * self.height)):      
+            color = np.array(img.getpixel(x, y))
+            error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
+            state = np.argmin(error)
+            if state != 0:
+                is_zero_cell = False
+                break
 
     def print(self, img):
         ''' Print the field on the terminal for debugging purpose
@@ -67,9 +91,9 @@ class Game:
                     # TODO: your code here
 
     def click(self, cell, button):
-        y = self.top + cell.r * self.height + 0.5 * self.height
-        x = self.left + cell.c * self.width + 0.5 * self.width
-        pyautogui.click(x, y, button = button)
+        y_center = self.top + cell.r * self.height + 0.5 * self.height
+        x_center = self.left + cell.c * self.width + 0.5 * self.width
+        pyautogui.click(x_center, y_center, button = button)
     
     def solve(self, img):
         pass

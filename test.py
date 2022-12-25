@@ -1,16 +1,42 @@
 import numpy as np
-class Piece:
-    def __init__(self, row, col):
-        self.row = row
-        self.col = col
-field = np.empty((2, 3), dtype='object')
-for row in range(2):
-    for col in range(3):
-        field[row, col] = (row, col)
-print(field[1, 2])
+import pyautogui as pg
+import keyboard
+from termcolor import colored
+import keyboard
+import sys
+import math
 
-neighbor = []
-for row in range(2):
-    for col in range(3):
-        neighbor.append(field[row, col])
-print(np.array(neighbor))
+colors = np.asarray([
+            [1000, 10000, 1000], # 0
+            [0, 0, 255], # 1
+            [70, 147, 70], # 2 note: 0 123 0
+            [255, 0, 0], # 3
+            [0, 0, 123], # 4
+            [123, 0, 0], # 5
+            [0, 125, 125], #6
+            [0, 0, 0], # 7
+            [125, 125, 125], # 8
+            [255, 255, 255] # white, for the left region of unclicked piece
+        ])
+
+
+if __name__ == '__main__':
+    # rows, cols = int(sys.argv[1]), int(sys.argv[2])
+
+    # keyboard.wait('enter')
+    # left, top = pg.position()
+    # keyboard.wait('enter')
+    # right, bot = pg.position()
+
+    # width = ((right - left) / cols)
+    # height = ((bot - top) / rows)
+    # centerX = left + 0 * width + 0.5 * width
+    # centerY = top + 0 * height + 0.5 * height
+    img = pg.screenshot()
+    
+    rgb = np.asarray(img.getpixel(pg.position()))
+    err = np.sum(np.square(rgb - colors), axis = 1, keepdims = True)
+    res = np.argmin(err)
+    print(rgb)
+    # print(err)
+    print(res)
