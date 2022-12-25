@@ -19,23 +19,34 @@ colors = np.asarray([
         ])
 
 
-if __name__ == '__main__':
-    # rows, cols = int(sys.argv[1]), int(sys.argv[2])
+# if __name__ == '__main__':
+#     img = pg.screenshot()
+#     rgb = np.asarray(img.getpixel(pg.position()))
+#     err = np.sum(np.square(rgb - colors), axis = 1, keepdims = True)
+#     res = np.argmin(err)
+#     print(rgb)
+#     # print(err)
+#     print(res)
 
-    # keyboard.wait('enter')
-    # left, top = pg.position()
-    # keyboard.wait('enter')
-    # right, bot = pg.position()
+# class Game:
+#     def __init__(self, x, y):
+#         self.x = x
+#         self.y = y
+#         self.create_field()
 
-    # width = ((right - left) / cols)
-    # height = ((bot - top) / rows)
-    # x_center = left + 0 * width + 0.5 * width
-    # y_center = top + 0 * height + 0.5 * height
-    img = pg.screenshot()
+#     def create_field(self):
+#         self.field = [1, 2, 3, 4, 5]
     
-    rgb = np.asarray(img.getpixel(pg.position()))
-    err = np.sum(np.square(rgb - colors), axis = 1, keepdims = True)
-    res = np.argmin(err)
-    print(rgb)
-    # print(err)
-    print(res)
+#     def print_field(self):
+#         for num in self.field:
+#             num = 1
+#         print(self.field)
+
+# game = Game(1, 2)
+# game.print_field()
+
+# for cell in cell_list:
+#     self.click(cell, 'right')
+#     cell.value = 9
+# for cell in cell_list:
+#     self.click(cell, 'left')

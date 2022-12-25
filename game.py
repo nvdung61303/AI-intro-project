@@ -37,7 +37,7 @@ colors_dict = {
     '6' : 'cyan',
     '.' : 'white',
     '*' : 'red',
-    'F' : 'yellow'
+    'F' : 'white'
 } 
 
 
@@ -67,21 +67,6 @@ class Game:
         for row in range(self.nrows):
             for col in range(self.ncols):
                 self.field[row, col] = Cell(row, col)
-
-    def get_neighbors(self, cell):
-        ''' Return a list of neighbor cells
-        '''
-        r, c = cell.r, cell.c
-        neighbors = []
-
-        for row in range(r - 1, r + 2):
-            for col in range(c - 1, c + 2):
-                if ((row != r or col != c) and
-                    (0 <= row < self.nrows) and
-                    (0 <= col < self.ncols)):
-                    neighbors.append(self.field[row, col])
-
-        return np.array(neighbors)
 
     def get_value(self, img, cell):
         ''' Get the current state of a cell from screenshot
@@ -146,10 +131,41 @@ class Game:
         print()
         print()
 
+    def get_neighbors(self, cell):
+        ''' Return an array of neighbor cells
+        '''
+        r, c = cell.r, cell.c
+        neighbors = []
+
+        for row in range(r - 1, r + 2):
+            for col in range(c - 1, c + 2):
+                if ((row != r or col != c) and
+                    (0 <= row < self.nrows) and
+                    (0 <= col < self.ncols)):
+                    neighbors.append(self.field[row, col])
+
+        return np.array(neighbors)
+
+    def get_border(self):
+        ''' Return an array of cells adjacent to covered cells
+        '''
+        border = []
+
+        for row in self.field:
+            for cell in row:
+                for neighbor in self.get_neighbors(cell):
+                    if cell.value == 7:
+                        border.append(neighbor)
+
+        return np.array(border)
+
+    def method_naive(self):
+        pass
+
+    def solve(self):
+        pass
+
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height
         x_center = self.left + cell.c * self.width + 0.5 * self.width
         pyautogui.click(x_center, y_center, button = button)
-    
-    def solve(self, img):
-        pass
