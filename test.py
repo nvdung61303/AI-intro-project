@@ -1,7 +1,6 @@
 import numpy as np
 import pyautogui as pg
 import keyboard
-from termcolor import colored
 import keyboard
 import sys
 import math
@@ -30,8 +29,8 @@ if __name__ == '__main__':
 
     # width = ((right - left) / cols)
     # height = ((bot - top) / rows)
-    # centerX = left + 0 * width + 0.5 * width
-    # centerY = top + 0 * height + 0.5 * height
+    # x_center = left + 0 * width + 0.5 * width
+    # y_center = top + 0 * height + 0.5 * height
     img = pg.screenshot()
     
     rgb = np.asarray(img.getpixel(pg.position()))

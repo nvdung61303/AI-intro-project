@@ -1,20 +1,44 @@
-import math
-
 import numpy as np
 
 import pyautogui
+import termcolor
 
 colors = np.array([
-            [189, 189, 189], # 0
-            [0, 0, 255], # 1
-            [0, 123, 0], # 2 
-            [255, 0, 0], # 3
-            [0, 0, 123], # 4
-            [123, 0, 0], # 5
-            [0, 123, 123], #6
-            [255, 255, 255] # covered
-            [0, 0, 0] # mine
-        ])
+    [189, 189, 189], # 0
+    [0, 0, 255], # 1
+    [0, 123, 0], # 2 
+    [255, 0, 0], # 3
+    [0, 0, 123], # 4
+    [123, 0, 0], # 5
+    [0, 123, 123], #6
+    [255, 255, 255], # 7 covered
+    [0, 0, 0] # 8 mine
+])
+
+colors_no0 = np.array([
+    [1000, 1000, 1000], # not 0
+    [0, 0, 255], # 1
+    [0, 123, 0], # 2 
+    [255, 0, 0], # 3
+    [0, 0, 123], # 4
+    [123, 0, 0], # 5
+    [0, 123, 123], #6
+    [255, 255, 255], # 7 covered
+    [0, 0, 0] # 8 mine
+])
+
+colors_dict = {
+    '0' : 'grey',
+    '1' : 'blue',
+    '2' : 'green',
+    '3' : 'red',
+    '4' : 'magenta',
+    '5' : 'red',
+    '6' : 'cyan',
+    '.' : 'white',
+    '*' : 'red',
+    'F' : 'yellow'
+} 
 
 
 class Cell: 
@@ -22,7 +46,7 @@ class Cell:
         ''' Initiatlize a cell with coordinates (r, c)
         '''
         self.r, self.c = r, c
-        self.value = 7 # num 0-6, covered 7, mine 8, flag 9
+        self.value = 7 # 0-6, covered 7, mine 8, flag 9
 
 
 class Game:
@@ -49,46 +73,78 @@ class Game:
         '''
         r, c = cell.r, cell.c
         neighbors = []
+
         for row in range(r - 1, r + 2):
             for col in range(c - 1, c + 2):
                 if ((row != r or col != c) and
                     (0 <= row < self.nrows) and
                     (0 <= col < self.ncols)):
                     neighbors.append(self.field[row, col])
+
         return np.array(neighbors)
 
-    def get_state(self, img, cell):
+    def get_value(self, img, cell):
         ''' Get the current state of a cell from screenshot
+        Return: cell value
         '''
         y_center = self.top + cell.r * self.height + 0.5 * self.height
         x_center = self.left + cell.c * self.width + 0.5 * self.width
-        is_zero_cell = True 
+        is_zero_cell = True
+        lowest_error = 3000000
+
+        # Check if value of a cell is zero. If it is not a zero cell, exit loop
         for y in range(int(y_center - 0.3 * self.height), int(y_center + 0.3 * self.height)):      
-            color = np.array(img.getpixel(x, y))
+            color = np.array(img.getpixel(x_center, y))
             error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
             state = np.argmin(error)
             if state != 0:
                 is_zero_cell = False
                 break
+            value = 0
+        
+        # Find value of a cell when already know it is not zero
+        if not is_zero_cell:
+            for y in range(int(y_center - 0.3 * self.height), int(y_center + 0.3 * self.height)):      
+                color = np.array(img.getpixel(x_center, y))
+                error = np.sum(np.square(color - colors_no0), axis = 1, keepdims = True)
+                state = np.argmin(error)  
+                if np.min(error) < lowest_error:
+                    lowest_error = np.min(error)
+                    value = state
+
+        # Zero cell and covered cell has same color. Check if it is a covered cell
+        if is_zero_cell:
+            for x in range(int(x_center - 0.5 * self.width), int(y_center - 0.3 * self.width)): 
+                color = np.array(img.getpixel(x, y_center))
+                error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
+                state = np.argmin(error)      
+                if state == 7:
+                    value = 7
+                    break
+
+        return value          
 
     def print(self, img):
-        ''' Print the field on the terminal for debugging purpose
+        ''' Print the field on the terminal, modify cell (except flag)
         '''
         for row in range(self.nrows):
             for col in range(self.ncols):
                 cell = self.field[row, col]
-                if cell.value == 9:
-                    pass
-                    # TODO: your code here
-                elif cell.value == 10:
-                    pass
-                    # TODO: your code here
-                elif cell.value == 11:
-                    pass
-                    # TODO: your code here
+                if cell.value == 9: # flag
+                    res = 'F'
                 else:
-                    pass
-                    # TODO: your code here
+                    res = self.get_value(img, cell)
+                    if res == 7: # covered
+                        res = '.'
+                    elif res == 8: # mine
+                        cell.value = 8
+                        res = '*'
+                    else: # 0-6
+                        cell.value = res
+                print(termcolor.colored(res, colors_dict[str(res)]), end = '')
+            print()
+        print()
+        print()
 
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height
