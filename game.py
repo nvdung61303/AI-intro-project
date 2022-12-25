@@ -154,7 +154,7 @@ class Game:
         for row in self.field:
             for cell in row:
                 for neighbor in self.get_neighbors(cell):
-                    if cell.value == 7:
+                    if neighbor.value == 7:
                         border.append(neighbor)
 
         return np.array(border)
