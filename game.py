@@ -200,12 +200,10 @@ class Game:
                     if cell.value == flag:
                         for neighbor in self.get_neighbors(cell):
                             if neighbor.value == 7:
-                                # self.click(neighbor, 'left')
                                 safe.append(neighbor)
                     if cell.value == covered + flag:
                         for neighbor in self.get_neighbors(cell):
                             if neighbor.value == 7:
-                                # self.click(neighbor, 'right')
                                 neighbor.value = 9
                                 mines.append(neighbor)
         
