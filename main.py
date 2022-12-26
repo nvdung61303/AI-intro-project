@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # Play the game
     game = Game(nrows, ncols, nmines, width, height, left, top)
     game.first_move()
-    for i in range(1):
+    for i in range(50):
         img = pyautogui.screenshot()
         game.print(img)
-        # break condition
+        game.solve()

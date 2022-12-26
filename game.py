@@ -1,3 +1,5 @@
+from time import sleep
+
 import numpy as np
 
 import pyautogui
@@ -99,7 +101,7 @@ class Game:
 
         # Zero cell and covered cell has same color. Check if it is a covered cell
         if is_zero_cell:
-            for x in range(int(x_center - 0.5 * self.width), int(y_center - 0.3 * self.width)): 
+            for x in range(int(x_center - 0.5 * self.width), int(x_center - 0.3 * self.width)): 
                 color = np.array(img.getpixel((x, y_center)))
                 error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
                 state = np.argmin(error)      
@@ -144,7 +146,7 @@ class Game:
                     (0 <= col < self.ncols)):
                     neighbors.append(self.field[row, col])
 
-        return np.array(neighbors)
+        return neighbors
 
     def get_border(self):
         ''' Return an array of cells adjacent to covered cells
@@ -158,7 +160,7 @@ class Game:
                         border.append(cell)
                         break
 
-        return np.array(border)
+        return border
     
     def get_num_covered(self, cell):
         ''' Return: int(number of covered cells around a cell)
@@ -189,18 +191,25 @@ class Game:
         ''' Basic algorithm to solve minesweeper
         '''
         safe, mines = [], []
-
-        for cell in self.get_border():
-            if self.get_num_covered(cell) == cell.value:
-                for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 7:    
-                        mines.append(neighbor)
-            if self.get_num_flag(cell) == cell.value:
-                for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 7:
-                        safe.append(neighbor)
-
-        return safe, mines
+        
+        for row in self.field:
+            for cell in row:
+                if cell.value != 7:
+                    flag = self.get_num_flag(cell)
+                    covered = self.get_num_covered(cell)
+                    if cell.value == flag:
+                        for neighbor in self.get_neighbors(cell):
+                            if neighbor.value == 7:
+                                # self.click(neighbor, 'left')
+                                safe.append(neighbor)
+                    if cell.value == covered + flag:
+                        for neighbor in self.get_neighbors(cell):
+                            if neighbor.value == 7:
+                                # self.click(neighbor, 'right')
+                                neighbor.value = 9
+                                mines.append(neighbor)
+        
+        return list(set(safe)), list(set(mines))
     
     def solve(self):
         ''' Go through all methods, then open safe cells and flag mine cells
@@ -211,12 +220,11 @@ class Game:
             safe, mines = method()
             if safe or mines:
                 break
-        
+
         for cell in safe:
             self.click(cell, 'left')
         for cell in mines:
             self.click(cell, 'right')
-            cell.value = 9
 
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height
