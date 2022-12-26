@@ -45,8 +45,9 @@ colors = np.asarray([
 # game = Game(1, 2)
 # game.print_field()
 
-# for cell in cell_list:
-#     self.click(cell, 'right')
-#     cell.value = 9
-# for cell in cell_list:
-#     self.click(cell, 'left')
+def click(button):
+    y_center = 323
+    x_center = 100
+    pg.click(x_center, y_center, button = button)
+
+click('left')

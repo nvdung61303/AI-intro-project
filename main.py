@@ -1,44 +1,30 @@
+import sys
+
 import pyautogui
 import keyboard
 
 from game import Game
 
 
-def main():
+if __name__ == '__main__':
     # Get number of rows, columns and mines
-    while True:
-        mode = input('Choose mode(beginner, intermediate, expert): ').lower()
-        if mode == 'beginner':
-            nrows, ncols, nmines = 9, 9, 10
-            break
-        elif mode == 'intermediate':
-            nrows, ncols, nmines = 16, 16, 40
-            break
-        elif mode == 'expert':
-            nrows, ncols, nmines = 16, 30, 99
-            break
-        else:
-            pass
+    nrows, ncols, nmines = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
 
     # Get top left corner coordinates of the field by pressing 'enter'
     keyboard.wait('enter')
     left, top = pyautogui.position()
     
     # Get bottom right corner coordinates of the field by pressing 'enter'
-    keyboard.wait()
+    keyboard.wait('enter')
     right, bottom = pyautogui.position()
-
+    
     # Calculate width and height of a cell
-    width = (right - left) / ncols
-    height = (bottom - top) / nrows
+    width, height = (right - left) / ncols, (bottom - top) / nrows
 
     # Play the game
     game = Game(nrows, ncols, nmines, width, height, left, top)
-    while True:
+    game.first_move()
+    for i in range(1):
         img = pyautogui.screenshot()
         game.print(img)
-        game.solve(img)
         # break condition
-
-if __name__ == '__main__':
-    main()

@@ -79,7 +79,7 @@ class Game:
 
         # Check if value of a cell is zero. If it is not a zero cell, exit loop
         for y in range(int(y_center - 0.3 * self.height), int(y_center + 0.3 * self.height)):      
-            color = np.array(img.getpixel(x_center, y))
+            color = np.array(img.getpixel((x_center, y)))
             error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
             state = np.argmin(error)
             if state != 0:
@@ -90,7 +90,7 @@ class Game:
         # Find value of a cell when already know it is not zero
         if not is_zero_cell:
             for y in range(int(y_center - 0.3 * self.height), int(y_center + 0.3 * self.height)):      
-                color = np.array(img.getpixel(x_center, y))
+                color = np.array(img.getpixel((x_center, y)))
                 error = np.sum(np.square(color - colors_no0), axis = 1, keepdims = True)
                 state = np.argmin(error)  
                 if np.min(error) < lowest_error:
@@ -100,7 +100,7 @@ class Game:
         # Zero cell and covered cell has same color. Check if it is a covered cell
         if is_zero_cell:
             for x in range(int(x_center - 0.5 * self.width), int(y_center - 0.3 * self.width)): 
-                color = np.array(img.getpixel(x, y_center))
+                color = np.array(img.getpixel((x, y_center)))
                 error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
                 state = np.argmin(error)      
                 if state == 7:
@@ -110,7 +110,7 @@ class Game:
         return value          
 
     def print(self, img):
-        ''' Print the field on the terminal, modify cell (except flag)
+        ''' Print the field on the terminal, modify cells (except flag)
         '''
         for row in range(self.nrows):
             for col in range(self.ncols):
@@ -126,7 +126,7 @@ class Game:
                         res = '*'
                     else: # 0-6
                         cell.value = res
-                print(termcolor.colored(res, colors_dict[str(res)]), end = '')
+                print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
             print()
         print()
         print()
@@ -155,15 +155,68 @@ class Game:
             for cell in row:
                 for neighbor in self.get_neighbors(cell):
                     if neighbor.value == 7:
-                        border.append(neighbor)
+                        border.append(cell)
+                        break
 
         return np.array(border)
+    
+    def get_num_covered(self, cell):
+        ''' Return: int(number of covered cells around a cell)
+        '''
+        count = 0
+
+        for neighbor in self.get_neighbors(cell):
+            if neighbor.value == 7:
+                count += 1
+        
+        return count
+
+    def get_num_flag(self, cell):
+        ''' Return: int(number of flag cells around a cell)
+        '''
+        count = 0
+
+        for neighbor in self.get_neighbors(cell):
+            if neighbor.value == 9:
+                count += 1
+
+        return count
+    
+    def first_move(self):
+        self.click(self.field[self.nrows // 2, self.ncols // 2], 'left')
 
     def method_naive(self):
-        pass
+        ''' Basic algorithm to solve minesweeper
+        '''
+        safe, mines = [], []
 
+        for cell in self.get_border():
+            if self.get_num_covered(cell) == cell.value:
+                for neighbor in self.get_neighbors(cell):
+                    if neighbor.value == 7:    
+                        mines.append(neighbor)
+            if self.get_num_flag(cell) == cell.value:
+                for neighbor in self.get_neighbors(cell):
+                    if neighbor.value == 7:
+                        safe.append(neighbor)
+
+        return safe, mines
+    
     def solve(self):
-        pass
+        ''' Go through all methods, then open safe cells and flag mine cells
+        '''
+        methods = [self.method_naive]
+
+        for method in methods:
+            safe, mines = method()
+            if safe or mines:
+                break
+        
+        for cell in safe:
+            self.click(cell, 'left')
+        for cell in mines:
+            self.click(cell, 'right')
+            cell.value = 9
 
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height
