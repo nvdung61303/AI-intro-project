@@ -12,7 +12,7 @@ colors = np.array([
     [255, 0, 0], # 3
     [0, 0, 123], # 4
     [123, 0, 0], # 5
-    [0, 123, 123], #6
+    [0, 123, 123], # 6
     [255, 255, 255], # 7 covered
     [0, 0, 0] # 8 mine
 ])
@@ -24,7 +24,7 @@ colors_no0 = np.array([
     [255, 0, 0], # 3
     [0, 0, 123], # 4
     [123, 0, 0], # 5
-    [0, 123, 123], #6
+    [0, 123, 123], # 6
     [255, 255, 255], # 7 covered
     [0, 0, 0] # 8 mine
 ])
@@ -48,8 +48,7 @@ class Cell:
         ''' Initiatlize a cell with coordinates (r, c)
         '''
         self.r, self.c = r, c
-        self.value = 7 # 0-6, covered 7, mine 8, flag 9
-
+        self.value = 'covered' # 0-6, covered 7, mine 8, flag 9
 
 class Game:
     ''' Game class hold information about the game current state,
@@ -117,17 +116,19 @@ class Game:
         for row in range(self.nrows):
             for col in range(self.ncols):
                 cell = self.field[row, col]
-                if cell.value == 9: # flag
+                if cell.value == 'flag':
                     res = 'F'
-                else:
+                elif cell.value == 'covered':
                     res = self.get_value(img, cell)
-                    if res == 7: # covered
+                    if res == 7:
                         res = '.'
-                    elif res == 8: # mine
-                        cell.value = 8
+                    elif res == 8:
+                        cell.value = 'mine'
                         res = '*'
-                    else: # 0-6
+                    else: 
                         cell.value = res
+                else:
+                    res = cell.value
                 print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
             print()
         print()
@@ -156,7 +157,7 @@ class Game:
         for row in self.field:
             for cell in row:
                 for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 7:
+                    if neighbor.value == 'covered':
                         border.append(cell)
                         break
 
@@ -168,7 +169,7 @@ class Game:
         count = 0
 
         for neighbor in self.get_neighbors(cell):
-            if neighbor.value == 7:
+            if neighbor.value == 'covered':
                 count += 1
         
         return count
@@ -179,7 +180,7 @@ class Game:
         count = 0
 
         for neighbor in self.get_neighbors(cell):
-            if neighbor.value == 9:
+            if neighbor.value == 'flag':
                 count += 1
 
         return count
@@ -194,18 +195,17 @@ class Game:
         
         for row in self.field:
             for cell in row:
-                if cell.value != 7:
-                    flag = self.get_num_flag(cell)
-                    covered = self.get_num_covered(cell)
-                    if cell.value == flag:
-                        for neighbor in self.get_neighbors(cell):
-                            if neighbor.value == 7:
-                                safe.append(neighbor)
-                    if cell.value == covered + flag:
-                        for neighbor in self.get_neighbors(cell):
-                            if neighbor.value == 7:
-                                neighbor.value = 9
-                                mines.append(neighbor)
+                flag = self.get_num_flag(cell)
+                covered = self.get_num_covered(cell)
+                if cell.value == flag:
+                    for neighbor in self.get_neighbors(cell):
+                        if neighbor.value == 'covered':
+                            safe.append(neighbor)
+                if cell.value == covered + flag:
+                    for neighbor in self.get_neighbors(cell):
+                        if neighbor.value == 'covered':
+                            neighbor.value = 'flag'
+                            mines.append(neighbor)
         
         return list(set(safe)), list(set(mines))
     

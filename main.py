@@ -8,8 +8,16 @@ from game import Game
 
 if __name__ == '__main__':
     # Get number of rows, columns and mines
-    nrows, ncols, nmines = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
-
+    # nrows, ncols, nmines = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
+    mode = sys.argv[1]
+    if mode == 'beginner':
+        nrows, ncols, nmines = 9, 9, 10
+    elif mode == 'intermediate':
+        nrows, ncols, nmines = 16, 16, 40
+    elif mode == 'expert':
+        nrows, ncols, nmines = 16, 30, 99
+    else:
+        pass
     # Get top left corner coordinates of the field by pressing 'enter'
     keyboard.wait('enter')
     left, top = pyautogui.position()
