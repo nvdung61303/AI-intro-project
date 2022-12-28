@@ -18,6 +18,7 @@ if __name__ == '__main__':
         nrows, ncols, nmines = 16, 30, 99
     else:
         pass
+    
     # Get top left corner coordinates of the field by pressing 'enter'
     keyboard.wait('enter')
     left, top = pyautogui.position()

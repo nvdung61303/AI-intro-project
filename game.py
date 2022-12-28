@@ -129,10 +129,10 @@ class Game:
                         cell.value = res
                 else:
                     res = cell.value
-        #         print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
-        #     print()
-        # print()
-        # print()
+                print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
+            print()
+        print()
+        print()
 
     def get_neighbors(self, cell):
         ''' Return a list of neighbor cells
@@ -148,20 +148,6 @@ class Game:
                     neighbors.append(self.field[row, col])
 
         return neighbors
-
-    def get_border(self):
-        ''' Return a list of cells adjacent to covered cells
-        '''
-        border = []
-
-        for row in self.field:
-            for cell in row:
-                for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 'covered':
-                        border.append(cell)
-                        break
-
-        return border
     
     def get_num_covered(self, cell):
         ''' Return: int(number of covered around a cell)
@@ -209,6 +195,14 @@ class Game:
                             self.nmines -= 1
         
         return list(set(safe)), list(set(mines))
+    
+    def method_CSP(self):
+        pass
+        # TODO: your code here
+    
+    def method_backtracking(self):
+        pass
+        # TODO: your code here
     
     def solve(self):
         ''' Go through all methods, then open safe cells and flag mine cells
