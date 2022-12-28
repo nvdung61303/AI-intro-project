@@ -144,6 +144,43 @@ class Game:
 
         return neighbors
     
+    # def get_covered_neighbors(self, cell):
+    #     ''' Return a list of covered neighbor cells
+    #     '''
+    #     covered_neighbors = []
+
+    #     for neighbor in self.get_neighbors(cell):
+    #         if neighbor.value == 'covered':
+    #             covered_neighbors.append(neighbor)
+
+    #     return covered_neighbors
+    
+    # def get_border(self):
+    #     ''' Return a list of border cells
+    #     '''
+    #     border = []
+
+    #     for row in self.field:
+    #         for cell in row:
+    #             if cell.value >= 0 and cell.value <= 6:
+    #                 for neighbor in self.get_neighbors(cell):
+    #                     if neighbor.value == 'covered':
+    #                         border.append(cell)
+    #                         break
+    #     return border
+
+    # def is_subgroup(self, cell_1, cell_2):
+    #     ''' Check if neighbors of cell 1 is a subgroup of neighbors of cell 2
+    #     Return: boolean
+    #     '''
+    #     res = True
+
+    #     for neighbor in self.get_covered_neighbors(cell_1):
+    #         if neighbor not in self.get_covered_neighbors(cell_2):
+    #             res = False
+
+    #     return res
+    
     def get_num_covered(self, cell):
         ''' Return: int(number of covered around a cell)
         '''
@@ -165,6 +202,11 @@ class Game:
                 count += 1
 
         return count
+    
+    # def get_num_mine(self, cell):
+    #     ''' Return: int(number of mines left around a cell)
+    #     '''
+    #     return cell.value - self.get_num_flag(cell)
     
     def first_move(self):
         self.click(self.field[self.nrows // 2, self.ncols // 2], 'left')
