@@ -1,5 +1,3 @@
-from time import sleep
-
 import numpy as np
 
 import pyautogui
@@ -54,9 +52,8 @@ class Game:
     ''' Game class hold information about the game current state,
     methods to solve the field from the current state
     '''
-    def __init__(self, nrows, ncols, nmines, width, height, left, top):
+    def __init__(self, nrows, ncols, width, height, left, top):
         self.nrows, self.ncols = nrows, ncols
-        self.nmines = nmines
         self.width, self.height = width, height
         self.left, self.top = left, top
         self.create_field()
@@ -118,17 +115,15 @@ class Game:
                 cell = self.field[row, col]
                 if cell.value == 'flag':
                     res = 'F'
-                elif cell.value == 'covered':
+                else:
                     res = self.get_value(img, cell)
                     if res == 7:
                         res = '.'
                     elif res == 8:
-                        cell.value = 'mine'
                         res = '*'
+                        cell.value = 'mine'
                     else: 
                         cell.value = res
-                else:
-                    res = cell.value
                 print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
             print()
         print()
@@ -190,9 +185,8 @@ class Game:
                 if cell.value == covered + flag:
                     for neighbor in self.get_neighbors(cell):
                         if neighbor.value == 'covered':
-                            neighbor.value = 'flag'
                             mines.append(neighbor)
-                            self.nmines -= 1
+                            neighbor.value = 'flag'
         
         return list(set(safe)), list(set(mines))
     
