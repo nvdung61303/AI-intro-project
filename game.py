@@ -129,13 +129,13 @@ class Game:
                         cell.value = res
                 else:
                     res = cell.value
-                print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
-            print()
-        print()
-        print()
+        #         print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
+        #     print()
+        # print()
+        # print()
 
     def get_neighbors(self, cell):
-        ''' Return an array of neighbor cells
+        ''' Return a list of neighbor cells
         '''
         r, c = cell.r, cell.c
         neighbors = []
@@ -150,7 +150,7 @@ class Game:
         return neighbors
 
     def get_border(self):
-        ''' Return an array of cells adjacent to covered cells
+        ''' Return a list of cells adjacent to covered cells
         '''
         border = []
 
@@ -164,7 +164,7 @@ class Game:
         return border
     
     def get_num_covered(self, cell):
-        ''' Return: int(number of covered cells around a cell)
+        ''' Return: int(number of covered around a cell)
         '''
         count = 0
 
@@ -175,7 +175,7 @@ class Game:
         return count
 
     def get_num_flag(self, cell):
-        ''' Return: int(number of flag cells around a cell)
+        ''' Return: int(number of flag around a cell)
         '''
         count = 0
 
@@ -206,6 +206,7 @@ class Game:
                         if neighbor.value == 'covered':
                             neighbor.value = 'flag'
                             mines.append(neighbor)
+                            self.nmines -= 1
         
         return list(set(safe)), list(set(mines))
     
