@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # Play the game
     game = Game(nrows, ncols, width, height, left, top)
     game.first_move()
-    for i in range(30):
+    for i in range(50):
         img = pyautogui.screenshot()
         game.print(img)
         game.solve()

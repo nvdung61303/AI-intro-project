@@ -162,24 +162,24 @@ class Game:
 
         for row in self.field:
             for cell in row:
-                if cell.value != 'covered' and cell.value != 'mine':
+                if cell.value != 'covered' and cell.value != 'flag':
                     for neighbor in self.get_covered_neighbors(cell):
                         border.append(cell)
 
         return list(set(border))
 
-    # def is_subgroup(self, cell_1, cell_2):
-    #     ''' Check if uncovered neighbors of cell 1 is a subgroup of 
-    #     uncovered neighbors of cell 2
-    #     Return: boolean
-    #     '''
-    #     res = True
+    def is_subgroup(self, cell_1, cell_2):
+        ''' Check if uncovered neighbors of cell 1 is a subgroup of 
+        uncovered neighbors of cell 2
+        Return: boolean
+        '''
+        res = True
 
-    #     for neighbor in self.get_covered_neighbors(cell_1):
-    #         if neighbor not in self.get_covered_neighbors(cell_2):
-    #             res = False
+        for neighbor in self.get_covered_neighbors(cell_1):
+            if neighbor not in self.get_covered_neighbors(cell_2):
+                res = False
 
-    #     return res
+        return res
     
     def get_num_covered(self, cell):
         ''' Return: int(number of covered around a cell)
@@ -203,10 +203,10 @@ class Game:
 
         return count
     
-    # def get_num_mine(self, cell):
-    #     ''' Return: int(number of mines left around a cell)
-    #     '''
-    #     return cell.value - self.get_num_flag(cell)
+    def get_num_mine(self, cell):
+        ''' Return: int(number of mines left around a cell)
+        '''
+        return int(cell.value) - self.get_num_flag(cell)
     
     def first_move(self):
         self.click(self.field[self.nrows // 2, self.ncols // 2], 'left')
@@ -217,22 +217,38 @@ class Game:
         safe, mines = [], []
         
         for cell in self.get_border():
-            flag = self.get_num_flag(cell)
+            mine = self.get_num_mine(cell)
             covered = self.get_num_covered(cell)
-            if cell.value == flag:
-                for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 'covered':
-                        safe.append(neighbor)
-            if cell.value == covered + flag:
-                for neighbor in self.get_neighbors(cell):
-                    if neighbor.value == 'covered':
-                        mines.append(neighbor)
+
+            # No mines around
+            if mine == 0:
+                safe.extend(self.get_covered_neighbors(cell))
+
+            # Number of mines left = number of unclicked cells
+            if mine == covered:
+                mines.extend(self.get_covered_neighbors(cell))
         
         return list(set(safe)), list(set(mines))
 
-    def method_CSP(self):
-        pass
-        # TODO: your code here
+    def method_group(self):
+        safe, mines = [], []
+
+        for cell_1 in self.get_border():
+            for cell_2 in self.get_border():
+                if self.is_subgroup(cell_1, cell_2):
+                    unclicked = self.get_covered_neighbors(cell_2)
+                    for ele in self.get_covered_neighbors(cell_1):
+                        unclicked.remove(ele)
+
+                    # Deduce safe cells
+                    if self.get_num_mine(cell_1) == self.get_num_mine(cell_2):
+                        safe.extend(unclicked)
+
+                    # Deduce mine cells
+                    if self.get_num_mine(cell_1) + len(unclicked) == self.get_num_mine(cell_2):
+                        mines.extend(unclicked)
+        
+        return list(set(safe)), list(set(mines))
     
     def method_backtracking(self):
         pass
@@ -241,9 +257,9 @@ class Game:
     def solve(self):
         ''' Go through all methods, then open safe cells and flag mine cells
         '''
-        methods = [self.method_naive]
+        methods = [self.method_naive, self.method_group]
 
-        for method in methods:
+        for method, method_name in methods:
             safe, mines = method()
             if safe or mines:
                 break
