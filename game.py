@@ -259,7 +259,7 @@ class Game:
         '''
         methods = [self.method_naive, self.method_group]
 
-        for method, method_name in methods:
+        for method in methods:
             safe, mines = method()
             if safe or mines:
                 break
