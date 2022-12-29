@@ -11,8 +11,9 @@ colors = np.array([
     [0, 0, 123], # 4
     [123, 0, 0], # 5
     [0, 123, 123], # 6
-    [255, 255, 255], # 7 covered
-    [0, 0, 0] # 8 mine
+    [0, 0, 0], # 7
+    [123, 123, 123], # 8
+    [255, 255, 255] # 9 covered
 ])
 
 colors_no0 = np.array([
@@ -23,8 +24,9 @@ colors_no0 = np.array([
     [0, 0, 123], # 4
     [123, 0, 0], # 5
     [0, 123, 123], # 6
-    [255, 255, 255], # 7 covered
-    [0, 0, 0] # 8 mine
+    [0, 0, 0], # 7
+    [123, 123, 123], # 8
+    [255, 255, 255] # 9 covered
 ])
 
 colors_dict = {
@@ -35,8 +37,9 @@ colors_dict = {
     '4' : 'magenta',
     '5' : 'red',
     '6' : 'cyan',
+    '7' : 'yellow',
+    '8' : 'yellow',
     '.' : 'white',
-    '*' : 'red',
     'F' : 'white'
 } 
 
@@ -46,7 +49,7 @@ class Cell:
         ''' Initiatlize a cell with coordinates (r, c)
         '''
         self.r, self.c = r, c
-        self.value = 'covered' # 0-6, covered, flag
+        self.value = 'covered' # 0-8, covered, flag
 
 class Game:
     ''' Game class hold information about the game current state,
@@ -101,11 +104,11 @@ class Game:
                 color = np.array(img.getpixel((x, y_center)))
                 error = np.sum(np.square(color - colors), axis = 1, keepdims = True)
                 state = np.argmin(error)      
-                if state == 7:
-                    value = 7
+                if state == 9:
+                    value = 9
                     break
 
-        return value          
+        return value
 
     def print(self, img):
         ''' Print the field on the terminal, modify cells (except flag)
@@ -117,11 +120,8 @@ class Game:
                     res = 'F'
                 else:
                     res = self.get_value(img, cell)
-                    if res == 7:
+                    if res == 9:
                         res = '.'
-                    elif res == 8:
-                        res = '*'
-                        cell.value = 'mine'
                     else: 
                         cell.value = res
                 print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
