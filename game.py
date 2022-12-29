@@ -46,7 +46,7 @@ class Cell:
         ''' Initiatlize a cell with coordinates (r, c)
         '''
         self.r, self.c = r, c
-        self.value = 'covered' # 0-6, covered 7, mine 8, flag 9
+        self.value = 'covered' # 0-6, covered, flag
 
 class Game:
     ''' Game class hold information about the game current state,
@@ -144,33 +144,33 @@ class Game:
 
         return neighbors
     
-    # def get_covered_neighbors(self, cell):
-    #     ''' Return a list of covered neighbor cells
-    #     '''
-    #     covered_neighbors = []
+    def get_covered_neighbors(self, cell):
+        ''' Return a list of covered neighbor cells
+        '''
+        covered_neighbors = []
 
-    #     for neighbor in self.get_neighbors(cell):
-    #         if neighbor.value == 'covered':
-    #             covered_neighbors.append(neighbor)
+        for neighbor in self.get_neighbors(cell):
+            if neighbor.value == 'covered':
+                covered_neighbors.append(neighbor)
 
-    #     return covered_neighbors
+        return covered_neighbors
     
-    # def get_border(self):
-    #     ''' Return a list of border cells
-    #     '''
-    #     border = []
+    def get_border(self):
+        ''' Return a list of border cells
+        '''
+        border = []
 
-    #     for row in self.field:
-    #         for cell in row:
-    #             if cell.value >= 0 and cell.value <= 6:
-    #                 for neighbor in self.get_neighbors(cell):
-    #                     if neighbor.value == 'covered':
-    #                         border.append(cell)
-    #                         break
-    #     return border
+        for row in self.field:
+            for cell in row:
+                if cell.value != 'covered' and cell.value != 'mine':
+                    for neighbor in self.get_covered_neighbors(cell):
+                        border.append(cell)
+
+        return list(set(border))
 
     # def is_subgroup(self, cell_1, cell_2):
-    #     ''' Check if neighbors of cell 1 is a subgroup of neighbors of cell 2
+    #     ''' Check if uncovered neighbors of cell 1 is a subgroup of 
+    #     uncovered neighbors of cell 2
     #     Return: boolean
     #     '''
     #     res = True
@@ -216,22 +216,20 @@ class Game:
         '''
         safe, mines = [], []
         
-        for row in self.field:
-            for cell in row:
-                flag = self.get_num_flag(cell)
-                covered = self.get_num_covered(cell)
-                if cell.value == flag:
-                    for neighbor in self.get_neighbors(cell):
-                        if neighbor.value == 'covered':
-                            safe.append(neighbor)
-                if cell.value == covered + flag:
-                    for neighbor in self.get_neighbors(cell):
-                        if neighbor.value == 'covered':
-                            mines.append(neighbor)
-                            neighbor.value = 'flag'
+        for cell in self.get_border():
+            flag = self.get_num_flag(cell)
+            covered = self.get_num_covered(cell)
+            if cell.value == flag:
+                for neighbor in self.get_neighbors(cell):
+                    if neighbor.value == 'covered':
+                        safe.append(neighbor)
+            if cell.value == covered + flag:
+                for neighbor in self.get_neighbors(cell):
+                    if neighbor.value == 'covered':
+                        mines.append(neighbor)
         
         return list(set(safe)), list(set(mines))
-    
+
     def method_CSP(self):
         pass
         # TODO: your code here
@@ -254,6 +252,7 @@ class Game:
             self.click(cell, 'left')
         for cell in mines:
             self.click(cell, 'right')
+            cell.value = 'flag'
 
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height
