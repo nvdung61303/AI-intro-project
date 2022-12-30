@@ -1,3 +1,6 @@
+import random
+import time
+
 import numpy as np
 
 import pyautogui
@@ -184,13 +187,7 @@ class Game:
     def get_num_covered(self, cell):
         ''' Return: int(number of covered around a cell)
         '''
-        count = 0
-
-        for neighbor in self.get_neighbors(cell):
-            if neighbor.value == 'covered':
-                count += 1
-        
-        return count
+        return len(self.get_covered_neighbors(cell))
 
     def get_num_flag(self, cell):
         ''' Return: int(number of flag around a cell)
@@ -207,9 +204,6 @@ class Game:
         ''' Return: int(number of mines left around a cell)
         '''
         return int(cell.value) - self.get_num_flag(cell)
-    
-    def first_move(self):
-        self.click(self.field[self.nrows // 2, self.ncols // 2], 'left')
 
     def method_naive(self):
         ''' Basic algorithm to solve minesweeper
@@ -231,6 +225,8 @@ class Game:
         return list(set(safe)), list(set(mines))
 
     def method_group(self):
+        ''' A simple CSP
+        '''
         safe, mines = [], []
 
         for cell_1 in self.get_border():
@@ -253,12 +249,51 @@ class Game:
     def method_backtracking(self):
         pass
         # TODO: your code here
+
+    def method_random(self):
+        ''' Pick a random cell, prefer corner(for opening)
+        '''
+        safe, mines= [], []
+        rand = []
+        corner = [self.field[0,0],
+        self.field[0, self.ncols - 1],
+        self.field[self.nrows - 1, 0], 
+        self.field[self.nrows - 1, self.ncols - 1]]
+
+        # If all corner cells was opened, pick a random cell
+        if corner[0].value != 'covered' and \
+           corner[1].value != 'covered' and \
+           corner[2].value != 'covered' and \
+           corner[3].value != 'covered':
+            for row in self.field:
+                for cell in row:
+                    if cell.value == 'covered':
+                        rand.append(cell)
+            safe.append(random.choice(rand))
+        
+        # Open a corner cell
+        else:
+            for cell in corner:
+                if cell.value == 'covered':
+                    safe.append(cell)
+                    break
+
+        return safe, mines
     
     def solve(self):
         ''' Go through all methods, then open safe cells and flag mine cells
         '''
-        methods = [self.method_naive, self.method_group]
+        # methods = [(self.method_naive, 'Naive')
+        # , (self.method_group, 'Group')
+        # , (self.method_random, 'Random')]
 
+        # for method, method_name in methods:
+        #     safe, mines = method()
+        #     if safe or mines:
+        #         print(method_name)
+        #         break
+        
+        methods = [self.method_naive, self.method_group, self.method_random]
         for method in methods:
             safe, mines = method()
             if safe or mines:
