@@ -20,15 +20,13 @@ if __name__ == '__main__':
         pass
     
     # Get top left corner coordinates of the field by pressing 'enter'
-    # keyboard.wait('enter')
-    # left, top = pyautogui.position()
+    keyboard.wait('enter')
+    left, top = pyautogui.position()
     
     # Get bottom right corner coordinates of the field by pressing 'enter'
-    # keyboard.wait('enter')
-    # right, bottom = pyautogui.position()
+    keyboard.wait('enter')
+    right, bottom = pyautogui.position()
 
-    left, top = 409, 666
-    right, bottom = 889, 924
     # Calculate width and height of a cell
     width, height = (right - left) / ncols, (bottom - top) / nrows
 
