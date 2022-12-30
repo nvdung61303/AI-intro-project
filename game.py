@@ -6,6 +6,8 @@ import numpy as np
 import pyautogui
 import termcolor
 
+pyautogui.PAUSE = 0.01
+
 colors = np.array([
     [189, 189, 189], # 0
     [0, 0, 255], # 1
@@ -127,10 +129,10 @@ class Game:
                         res = '.'
                     else: 
                         cell.value = res
-                print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
-            print()
-        print()
-        print()
+        #         print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
+        #     print()
+        # print()
+        # print()
 
     def get_neighbors(self, cell):
         ''' Return a list of neighbor cells

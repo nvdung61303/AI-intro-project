@@ -1,4 +1,5 @@
 import sys
+import time
 
 import pyautogui
 import keyboard
@@ -19,19 +20,21 @@ if __name__ == '__main__':
         pass
     
     # Get top left corner coordinates of the field by pressing 'enter'
-    keyboard.wait('enter')
-    left, top = pyautogui.position()
+    # keyboard.wait('enter')
+    # left, top = pyautogui.position()
     
     # Get bottom right corner coordinates of the field by pressing 'enter'
-    keyboard.wait('enter')
-    right, bottom = pyautogui.position()
-    
+    # keyboard.wait('enter')
+    # right, bottom = pyautogui.position()
+
+    left, top = 409, 666
+    right, bottom = 889, 924
     # Calculate width and height of a cell
     width, height = (right - left) / ncols, (bottom - top) / nrows
 
     # Play the game
     game = Game(nrows, ncols, width, height, left, top)
-    for i in range(50):
+    for i in range(90):
         img = pyautogui.screenshot()
         game.print(img)
         game.solve()
