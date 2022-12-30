@@ -115,24 +115,36 @@ class Game:
 
         return value
 
-    def print(self, img):
+    def update_field(self, img):
         ''' Print the field on the terminal, modify cells (except flag)
         '''
-        for row in range(self.nrows):
-            for col in range(self.ncols):
-                cell = self.field[row, col]
+        for row in self.field:
+            for cell in row:
                 if cell.value == 'flag':
-                    res = 'F'
+                    value = 'F'
                 else:
-                    res = self.get_value(img, cell)
-                    if res == 9:
-                        res = '.'
+                    value = self.get_value(img, cell)
+                    if value == 9:
+                        value = '.'
                     else: 
-                        cell.value = res
-        #         print(termcolor.colored(res, colors_dict[str(res)]), end = ' ')
+                        cell.value = value
+        #         print(termcolor.colored(value, colors_dict[str(value)]), end = ' ')
         #     print()
         # print()
         # print()
+
+    def num_all_covered(self):
+        ''' Purpose: exit game
+        Return: number all covered cells on the field
+        '''
+        count = 0
+
+        for row in self.field:
+            for cell in row:
+                if cell.value == 'covered':
+                    count += 1
+
+        return count
 
     def get_neighbors(self, cell):
         ''' Return a list of neighbor cells
@@ -209,6 +221,7 @@ class Game:
 
     def method_naive(self):
         ''' Basic algorithm to solve minesweeper
+        Return: list of safe and mine celss
         '''
         safe, mines = [], []
         
@@ -228,6 +241,7 @@ class Game:
 
     def method_group(self):
         ''' A simple CSP
+        Return: list of safe and mine cells
         '''
         safe, mines = [], []
 
@@ -254,6 +268,7 @@ class Game:
 
     def method_random(self):
         ''' Pick a random cell, prefer corner(for opening)
+        Return: list of safe cells(random cell) and mine cells(none)
         '''
         safe, mines= [], []
         rand = []
@@ -304,7 +319,7 @@ class Game:
         for cell in safe:
             self.click(cell, 'left')
         for cell in mines:
-            self.click(cell, 'right')
+            #self.click(cell, 'right')
             cell.value = 'flag'
 
     def click(self, cell, button):

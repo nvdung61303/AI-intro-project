@@ -31,8 +31,14 @@ if __name__ == '__main__':
     width, height = (right - left) / ncols, (bottom - top) / nrows
 
     # Play the game
+    num_all_covered = 1000
     game = Game(nrows, ncols, width, height, left, top)
-    for i in range(90):
+    game.solve()
+    while True:
         img = pyautogui.screenshot()
-        game.print(img)
-        game.solve()
+        game.update_field(img)
+        if game.num_all_covered() != num_all_covered:
+            num_all_covered = game.num_all_covered()
+            game.solve()
+        else:
+            break
