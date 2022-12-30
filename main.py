@@ -30,10 +30,11 @@ if __name__ == '__main__':
     # Calculate width and height of a cell
     width, height = (right - left) / ncols, (bottom - top) / nrows
 
-    # Play the game
+    # Play the game (this was a mess because the screenshot fuction
+    # run before solve function but somehow this still work. Don't
+    # ask me why :v )
     num_all_covered = 1000
     game = Game(nrows, ncols, width, height, left, top)
-    game.solve()
     while True:
         img = pyautogui.screenshot()
         game.update_field(img)
@@ -42,3 +43,4 @@ if __name__ == '__main__':
             game.solve()
         else:
             break
+        time.sleep(0.1)
