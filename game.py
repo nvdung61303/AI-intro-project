@@ -60,8 +60,8 @@ class Game:
     ''' Game class hold information about the game current state,
     methods to solve the field from the current state
     '''
-    def __init__(self, nrows, ncols, width, height, left, top):
-        self.nrows, self.ncols = nrows, ncols
+    def __init__(self, nrows, ncols, nmines, width, height, left, top):
+        self.nrows, self.ncols, self.nmines = nrows, ncols, nmines
         self.width, self.height = width, height
         self.left, self.top = left, top
         self.create_field()
@@ -277,7 +277,7 @@ class Game:
         self.field[self.nrows - 1, 0], 
         self.field[self.nrows - 1, self.ncols - 1]]
 
-        # If all corner cells was opened, pick a random cell
+        # If all corner cells were opened, pick a random cell
         if corner[0].value != 'covered' and \
            corner[1].value != 'covered' and \
            corner[2].value != 'covered' and \
@@ -321,6 +321,7 @@ class Game:
         for cell in mines:
             #self.click(cell, 'right')
             cell.value = 'flag'
+            self.nmines -= 1
 
     def click(self, cell, button):
         y_center = self.top + cell.r * self.height + 0.5 * self.height

@@ -11,11 +11,11 @@ if __name__ == '__main__':
     # Get number of rows, columns
     mode = sys.argv[1]
     if mode == 'beginner':
-        nrows, ncols = 9, 9
+        nrows, ncols, nmines = 9, 9, 10
     elif mode == 'intermediate':
-        nrows, ncols = 16, 16
+        nrows, ncols, nmines = 16, 16, 40
     elif mode == 'expert':
-        nrows, ncols = 16, 30
+        nrows, ncols, nmines = 16, 30, 99
     else:
         pass
     
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # run before solve function but somehow this still work. Don't
     # ask me why :v )
     num_all_covered = 1000
-    game = Game(nrows, ncols, width, height, left, top)
+    game = Game(nrows, ncols, nmines, width, height, left, top)
     while True:
         img = pyautogui.screenshot()
         game.update_field(img)
@@ -43,4 +43,4 @@ if __name__ == '__main__':
             game.solve()
         else:
             break
-        time.sleep(0.1)
+        time.sleep(0.05)
